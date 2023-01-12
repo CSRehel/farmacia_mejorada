@@ -1,18 +1,23 @@
 const { config } = require('./../config/config');
 const jwt = require('jsonwebtoken');
 
+const AuthService = require('../services/auth.services');
+const service = new AuthService();
+
+
 // para acceder a rutas protegidas
 async function isAuth(req, res, next) {
 
-    if (!req.query.token) {
+    if (!req.query.email) {
         return res
             .status(403)
             .render('Error', { message: "No autorizado", code: 403 });
     }
 
-    const token = req.query.token;
+    const { token } = await service.findByEmail(req.query.email);
 
     jwt.verify(token, config.jwtSecret, function (err, payload) {
+
         if (err) {
             switch (err.name) {
                 case 'JsonWebTokenError':
@@ -23,7 +28,9 @@ async function isAuth(req, res, next) {
                     return res.status(500).render('Error', { message: err, code: '500' });
             }
         }
-        req.user = payload.sub; //carga de datos al payload para pasarlo a la vista home
+
+        //carga de datos al payload para pasarlo a las vista
+        req.email = payload.sub;
         next();
     });
 }

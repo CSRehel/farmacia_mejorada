@@ -2,9 +2,9 @@ const isAuth = require('../middleware/auth');
 const express = require('express');
 const router = express.Router();
 
-// renderiza la vista Home
+// renderiza la vista de prescripciones
 router.get('/', isAuth, async (req, res) => {
-    res.render('Home', { email: req.email });
+    res.render('Prescription');
 });
 
 module.exports = router;

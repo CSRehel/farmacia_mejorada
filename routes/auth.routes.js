@@ -14,11 +14,11 @@ router.post('/', async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const user = await service.authenticateUser(email, password);
-        const token = await service.signToken(user.id);
+        const token = await service.signToken(user.email);
         // res.json(token);
 
         if (token) {
-            res.redirect(`http://localhost:3000/?token=${token.token}`);
+            res.redirect(`http://localhost:3000/?email=${user.email}`);
         }
 
     } catch (error) {

@@ -28,21 +28,18 @@ class AuthService {
 
     /**
      * @description crea un token para el acceso al sistema.
-     * @param {*} user id del usuario
-     * @returns retorna un token para el acceso al sistema
+     * @param {*} email correo del usuario
+     * @returns retorna 1 si el proceso fue satisfactorio
      */
-    async signToken(user_id) {
+    async signToken(email) {
         const payload = {
-            sub: user_id
+            sub: email
         }
         const token = await jwt.sign(payload, config.jwtSecret);
-        const query = `UPDATE users SET token = '${token}' WHERE id = '${user_id}'`;
+        const query = `UPDATE users SET token = '${token}' WHERE email = '${email}'`;
         const resp = await pool.query(query);
 
-        return {
-            resp: resp.rowCount,
-            token
-        };
+        return resp.rowCount;
     }
 
     /**
