@@ -5,7 +5,7 @@ const AuthService = require('../services/auth.services');
 const service = new AuthService();
 
 // renderiza la vista Login
-router.get('/logout', async (req, res) => {
+router.get('/', async (req, res) => {
     res.render('Login');
 });
 
@@ -15,7 +15,6 @@ router.post('/', async (req, res, next) => {
         const { email, password } = req.body;
         const user = await service.authenticateUser(email, password);
         const token = await service.signToken(user.email);
-        // res.json(token);
 
         if (token) {
             res.redirect(`http://localhost:3000/?email=${user.email}`);

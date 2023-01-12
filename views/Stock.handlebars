@@ -5,42 +5,44 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-            <form action="/stock" method="POST">
+            <form action="/stock/" method="POST">
                 <div class="mb-3">
-                    <label for="medicamento" class="form-label">Medicamento</label>
-                    <input type="text" class="form-control" id="medicamento" name="medicamento" required>
+                    <input type="hidden" class="form-control" id="email" name="email" value="{{email}}" required>
+
+                    <label for="medicine" class="form-label">Medicamento</label>
+                    <input type="text" class="form-control" id="medicine" name="medicine" required>
                 </div>
                 <div class="mb-3">
-                    <label for="codigo" class="form-label">Código</label>
-                    <input type="number" class="form-control" id="codigo" name="codigo" required>
+                    <label for="code" class="form-label">Código</label>
+                    <input type="number" class="form-control" id="code" name="code" required>
                 </div>
                 <div class="mb-3">
-                    <label for="descripcion" class="form-label">Descripción</label>
-                    <textarea rows="3" cols="1" class="form-control" id="descripcion" name="descripcion" required></textarea>
+                    <label for="description" class="form-label">Descripción</label>
+                    <textarea rows="3" cols="1" class="form-control" id="description" name="description" required></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="fabricante" class="form-label">Fabricante</label>
-                    <input type="text" class="form-control" id="fabricante" name="fabricante" required>
+                    <label for="manufacturer" class="form-label">Fabricante</label>
+                    <input type="text" class="form-control" id="manufacturer" name="manufacturer" required>
                 </div>
                 <div class="input-group mb-3">
-                    <label for="peso" class="form-label w-100">Gramage</label>
-                    <input type="number" class="form-control" id="peso" name="peso" min="0" required>
+                    <label for="weight" class="form-label w-100">Gramage</label>
+                    <input type="number" class="form-control" id="weight" name="weight" min="0" required>
 
                     <span class="input-group-text">Detalle</span>
 
-                    <select class="form-select col-md-6" id="medida" name="medida" required>
+                    <select class="form-select col-md-6" id="measure" name="measure" required>
                         <option value="mg">mg</option>
                         <option value="gr">gr</option>
                         <option value="ml">ml</option>
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="unidad" class="form-label">Cantidad unidad</label>
-                    <input type="number" class="form-control" id="unidad" name="unidad" min="1" required>
+                    <label for="unit" class="form-label">Cantidad unidad</label>
+                    <input type="number" class="form-control" id="unit" name="unit" min="1" required>
                 </div>
                 <div class="mb-3">
-                    <label for="caja" class="form-label">Cantidad cajas</label>
-                    <input type="number" class="form-control" id="caja" name="caja" min="1" required>
+                    <label for="box" class="form-label">Cantidad cajas</label>
+                    <input type="number" class="form-control" id="box" name="box" min="1" required>
                 </div>
 
                 <div class="mb-3">
@@ -61,9 +63,9 @@
         <div class="col-md-4">
             <form action="">
                 <div class="mb-3">
-                    <select class="form-select col-md-6" name="medicamento1" id="medicamento1">
-                        {{#each medicamentos}}
-                            <option value="{{this.medicamento}}">{{this.medicamento}}</option>
+                    <select class="form-select col-md-6" name="medicine1" id="medicine1">
+                        {{#each medicines}}
+                            <option value="{{this.medicine}}">{{this.medicine}}</option>
                         {{/each}}
                     </select>
                 </div>
@@ -91,7 +93,7 @@
         payload = { medicamento, caja }
 
         if(caja > 0){
-            
+
             try{
                 await axios.put('/stock', payload)
                 alert('Stock actualizado')
