@@ -25,7 +25,7 @@
                     <input type="text" class="form-control" id="manufacturer" name="manufacturer" required>
                 </div>
                 <div class="input-group mb-3">
-                    <label for="weight" class="form-label w-100">Gramage</label>
+                    <label for="weight" class="form-label w-100">Gramaje</label>
                     <input type="number" class="form-control" id="weight" name="weight" min="0" required>
 
                     <span class="input-group-text">Detalle</span>
@@ -63,20 +63,20 @@
         <div class="col-md-4">
             <form action="">
                 <div class="mb-3">
-                    <select class="form-select col-md-6" name="medicine1" id="medicine1">
+                    <select class="form-select col-md-6" name="idMedicine" id="idMedicine">
                         {{#each medicines}}
-                            <option value="{{this.medicine}}">{{this.medicine}}</option>
+                            <option value="{{this.id}}">{{this.medicine}} {{this.weight}}{{this.measure}}</option>
                         {{/each}}
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="caja1" class="form-label">Cantided de cajas</label>
-                    <input type="number" class="form-control" name="caja1" id="caja1" min="1" required>
+                    <label for="boxUp" class="form-label">Cantidad de cajas</label>
+                    <input type="number" class="form-control" name="boxUp" id="boxUp" min="1" required>
                 </div>
 
                 <div class="mb-3">
                     <div class="text-danger mt-3">{{message}}</div>
-                    <button type="button" onclick="actualizarStock()" class="btn btn-md btn-outline-secondary">Actualizar</button>
+                    <button type="button" onclick="updateStock('{{email}}')" class="btn btn-md btn-outline-secondary">Actualizar</button>
                 </div>
             </form>
         </div>
@@ -86,26 +86,27 @@
 
 <script>
 
-    const actualizarStock = async () => {
-        const medicamento = $('#medicamento1').val()
-        const caja = $('#caja1').val()
+    const updateStock = async (email) => {
+        const idMedicine = $('#idMedicine').val();
+        const boxUp = $('#boxUp').val();
 
-        payload = { medicamento, caja }
+        payload = { idMedicine, boxUp }
 
-        if(caja > 0){
+        if(boxUp > 0){
 
             try{
-                await axios.put('/stock', payload)
-                alert('Stock actualizado')
-                window.location.href = '/'
+                await axios.put('/stock/', payload);
+                alert('Stock actualizado');
+                window.location.href = `/?email=${email}`;
 
             }catch({ response }){
-                const { data } = response
-                const { error } = data
-                console.log(error)
+                const { data } = response;
+                const { error } = data;
+                console.log(error);
             }
+
         }else{
-            alert('La cantidad de cajas debe ser al menos 1 unidad')
+            alert('La cantidad de cajas debe ser al menos 1 unidad');
         }
     }
 

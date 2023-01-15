@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser'); // ya no se necesita ***
 const { engine } = require('express-handlebars');
 
 const { config } = require('./config/config');

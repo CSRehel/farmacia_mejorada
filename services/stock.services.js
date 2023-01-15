@@ -5,11 +5,11 @@ class stockService {
 
     /**
      * @description obtiene la lista de medicamentos registrados en la BD
-     * @returns devuelve la lista de medicamentos
+     * @returns devuelve la lista de medicamentos con su id, nombre, gramaje y unidad medida
      */
     async getMedicines() {
         const result = await pool.query(
-            `select id, medicine from stock;`
+            `select id, medicine, weight, measure from stock;`
         );
 
         const medicines = result.rows;
@@ -40,6 +40,27 @@ class stockService {
 
         const stock = result.rowCount;
         return stock;
+    }
+
+    /**
+     * @description actualiza el stock, sumando las unidades y cajas ingresadas en el formulario a las unidades
+     * y cajas ya registradas en el sistema.
+     * @param {*} idMedicine id del medicamento
+     * @param {*} boxUp número de cajas
+     * @return
+     */
+    async updateStock(idMedicine, boxUp) {
+        const query = await pool.query(`select unit from stock where id = '${idMedicine}'`);
+        const unit = query.rows[0].unit
+        const amount = (unit * boxUp);
+
+        const increaseStock = {
+            text: `UPDATE stock SET total = (total + $2), box = (box + $3) where id = $1`,
+            values: [idMedicine, Number(amount), boxUp]
+        }
+
+        const query2 = await pool.query(increaseStock);
+        return query2.rowCount;
     }
 }
 

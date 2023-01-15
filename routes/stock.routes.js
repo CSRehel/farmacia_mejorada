@@ -28,8 +28,18 @@ router.post('/', async (req, res) => {
     }
 });
 
+// actualización de stock
 router.put('/', async (req, res) => {
-    
+    const { idMedicine, boxUp } = req.body;
+
+    try {
+        const stock = await service.updateStock(idMedicine, boxUp);
+        res.sendStatus(200).send(stock);
+        // const verify = await verificarReserva(medicine); // pendiente nodemailer***
+
+    } catch (e) {
+        res.sendStatus(500).render('Stock', {message: `Error al guardar los datos`, code: 500})
+    }
 })
 
 module.exports = router;
