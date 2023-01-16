@@ -22,38 +22,38 @@
             </div>
             <div class="mb-3">
                 <h5>Medicamento</h5>
-                <p class="medicamento" id="medicamento">{{medicamento}}</p>
+                <p class="medicine" id="medicine">{{medicine}}</p>
             </div>
             <div class="mb-3">
                 <h5>Unidades solicitadas</h5>
-                <p class="cantidad" id="cantidad">{{cantidad}}</p>
+                <p class="amount" id="amount">{{amount}}</p>
             </div>
             <div class="mb-3">
                 <h5>Duración tratamiento</h5>
-                <p class="dias" id="dias">{{dias}} días</p>
+                <p class="days" id="days">{{days}} días</p>
             </div>
         </div>
 
         <!--save form-->
         <div class="col-md-4">
-            <form action="entrega" method="POST">
+            <form action="/delivery/" method="POST">
                 <div class="mb-3">
-                    <label for="paciente" class="form-label">Retirado por</label>
-                    <input type="text" class="form-control" value="{{paciente}}" disabled>
+                    <label for="patient" class="form-label">Retirado por</label>
+                    <input type="text" class="form-control" value="{{patient}}" disabled>
                 </div>
                 <div class="mb-3">
                     <label for="rut" class="form-label">Rut</label>
                     <input type="text" class="form-control" value="{{rut}}" disabled>
                 </div>
                 <div class="mb-3">
-                    <label for="descuento" class="form-label">Unidades entregadas</label>
-                    <input type="number" class="form-control" value="{{cantidad}}" disabled>
+                    <label for="discount" class="form-label">Unidades entregadas</label>
+                    <input type="number" class="form-control" value="{{amount}}" disabled>
                 </div>
                 <div class="mb-3">
-                    <input type="hidden" value="'{{medicamento}}'" name="medicamento" id="medicamento">
-                    <input type="hidden" value="{{id_prescripcion}}" name="id_prescripcion" id="id_prescripcion">
-                    <input type="hidden" value="{{cantidad}}" name="descuento" id="descuento">
-                    
+                    <input type="hidden" value="'{{medicine}}'" name="medicine" id="medicine">
+                    <input type="hidden" value="{{id_prescription}}" name="id_prescription" id="id_prescription">
+                    <input type="hidden" value="{{amount}}" name="discount" id="discount">
+
                     <div class="text-danger mt-3" role="alert">{{message}}</div>
 
                     <button type="submit" class="btn btn-md btn-outline-secondary">Guardar</button>
@@ -66,5 +66,5 @@
 </main>
 
 <script>
-    window.history.replaceState({} , '', 'entrega');
+    window.history.replaceState({} , '', 'confirm');
 </script>

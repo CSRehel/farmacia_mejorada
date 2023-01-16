@@ -8,13 +8,13 @@
             <div class=""></div>
         </div>
     </div>
-    
+
     <div
         class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Prescripciones pendientes</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="actualizar()">Actualizar</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="pageUpdate()">Actualizar</button>
             </div>
         </div>
     </div>
@@ -39,33 +39,33 @@
             <tbody>
 
                 <!--row-->
-                {{#each presc}}
-                    {{#estado this.estado}}
+                {{#each prescriptions}}
+                    {{#state this.state}}
                     <tr>
-                        <td>{{this.id_receta}}</td>
+                        <td>{{this.id_prescription}}</td>
                         <td>{{this.rut}}</td>
-                        <td>{{this.paciente}}</td>
-                        <td>{{this.medicamento}}</td>
-                        <td>{{this.cantidad}}</td>
+                        <td>{{this.patient}}</td>
+                        <td>{{this.medicine}}</td>
+                        <td>{{this.amount}}</td>
                         <td>{{this.total}}</td>
-                        <td><button type="button" class="btn btn-sm btn-outline-secondary" 
-                        onclick="validarStock(
-                            {{this.dias}},
-                            '{{this.estado}}', 
+                        <td><button type="button" class="btn btn-sm btn-outline-secondary"
+                        onclick="validateStock(
+                            {{this.days}},
+                            '{{this.state}}',
                             {{this.id}},
-                            {{this.id_receta}},
+                            {{this.id_prescription}},
                             '{{this.rut}}',
-                            '{{this.correo}}',
-                            '{{this.paciente}}',
-                            '{{this.medicamento}}',
-                            {{this.cantidad}},
+                            '{{this.email}}',
+                            '{{this.patient}}',
+                            '{{this.medicine}}',
+                            {{this.amount}},
                             {{this.total}}
                         )">Ingresar</button></td>
                     </tr>
-                    {{/estado}}
+                    {{/state}}
                 {{/each}}
                 <!--end row-->
-
+                <input type="hidden" value="{{admin}}" id="admin" name="admin">
             </tbody>
 
         </table>
@@ -75,35 +75,36 @@
 </main>
 
 <script>
-    const validarStock = async (dias, estado, id, id_receta, rut, correo, paciente, medicamento, cantidad, total) => {
+    const validateStock = async (days, state, id, id_prescription, rut, email, patient, medicine, amount, total) => {
 
-        const validar = total - cantidad
-
-        if(validar > 0){
-
+        const admin = $('#admin').val();
+        const validate = total - amount;
+        
+        // si validate es mayor a cero, entonces hay stock disponible de medicamento
+        if(validate > 0){
             try{
-                window.location.href = `/entrega?id_prescripcion=${id}&id_receta=${id_receta}&rut=${rut}&paciente=${paciente}&medicamento=${medicamento}&cantidad=${cantidad}&dias=${dias}&estado=${estado}`
-                
+                window.location.href = `/delivery/?admin=${admin}&id=${id}&id_prescription=${id_prescription}&rut=${rut}&patient=${patient}&medicine=${medicine}&amount=${amount}&days=${days}&state=${state}`;
+
             }catch({response}){
-                const { data } = response
-                const { error } = data
-                alert( error )
+                const { data } = response;
+                const { error } = data;
+                alert( error );
             }
 
         }else{
-            try{
-                window.location.href = `/reserva?id_prescripcion=${id}&id_receta=${id_receta}&rut=${rut}&correo=${correo}&paciente=${paciente}&medicamento=${medicamento}&cantidad=${cantidad}&dias=${dias}&estado=${estado}`
-                
+            /*try{
+                window.location.href = `/reserva?id_prescripcion=${id}&id_receta=${id_receta}&rut=${rut}&correo=${correo}&paciente=${paciente}&medicamento=${medicamento}&cantidad=${cantidad}&dias=${dias}&estado=${estado}`;
+
             }catch({response}){
-                const { data } = response
-                const { error } = data
-                alert( error )
-            }
+                const { data } = response;
+                const { error } = data;
+                alert( error );
+            }*/
         }
 
     }
 
-    const actualizar = () => {
+    const pageUpdate = () => {
         window.location.reload()
     }
 </script>

@@ -8,13 +8,14 @@ const service = new AuthService();
 // para acceder a rutas protegidas
 async function isAuth(req, res, next) {
 
-    if (!req.query.email) {
+    if (!req.query.email && !req.query.admin) {
         return res
             .status(403)
             .render('Error', { message: "No autorizado", code: 403 });
     }
 
-    const { token } = await service.findByEmail(req.query.email);
+    const email = req.query.email || req.query.admin;
+    const { token } = await service.findByEmail(email);
 
     jwt.verify(token, config.jwtSecret, function (err, payload) {
 

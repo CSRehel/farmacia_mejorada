@@ -41,6 +41,8 @@ create table prescriptions(
     email varchar(50) not null,
     patient varchar(100) not null,
     medicine varchar(50) not null,
+    weight_medicine int not null,
+    measure_medicine varchar(5) not null,
     amount int not null,
     days int not null,
     state varchar(20) not null,
