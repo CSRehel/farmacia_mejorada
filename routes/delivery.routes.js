@@ -21,6 +21,7 @@ router.get('/', isAuth, async(req, res) => {
     });
 });
 
+// descuento de stock y cambio de estado de prescripción
 router.post('/', async(req, res) => {
     const { discount, id_prescription, medicine, email } = req.body;
 
@@ -33,7 +34,5 @@ router.post('/', async(req, res) => {
     }
 
 });
-
-// terminar descuento de stock en formulario vista delivery
 
 module.exports = router;

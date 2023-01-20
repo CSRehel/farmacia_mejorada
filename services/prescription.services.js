@@ -42,14 +42,13 @@ class PrescriptionService {
      * @param {*} measure_medicine unidad de medida del medicamento
      * @param {*} amount cantidad de medicamento recetada
      * @param {*} days cantidad de días a tomar medicamento
-     * @param {*} state estado
      * @param {*} id_stock id del medicamento
      * @returns devuelve la data del registro
      */
-    async PrescriptionRecord(id_prescription, rut, email, patient, medicine, weight_medicine, measure_medicine, amount, days, state, id_stock) {
+    async PrescriptionRecord(id_prescription, rut, email, patient, medicine, weight_medicine, measure_medicine, amount, days, id_stock) {
         const result = await pool.query(
             `insert into prescriptions(id_prescription, rut, email, patient, medicine, weight_medicine, measure_medicine, amount, days, state, id_stock)
-            values ('${id_prescription}', '${rut}', '${email}', '${patient}', '${medicine}', '${weight_medicine}', '${measure_medicine}', '${amount}', '${days}', '${state}', '${id_stock}') RETURNING *`
+            values ('${id_prescription}', '${rut}', '${email}', '${patient}', '${medicine}', '${weight_medicine}', '${measure_medicine}', '${amount}', '${days}', 'pendiente', '${id_stock}') RETURNING *`
         );
 
         return result.rows[0];

@@ -38,14 +38,14 @@ router.post('/', async (req, res) => {
             medicine,
             weight_medicine,
             measure_medicine,
-            amount, days,
-            state
+            amount,
+            days
         } = req.body;
 
     try {
         const { id: id_stock } = await service.getIdStock(medicine, weight_medicine, measure_medicine);
 
-        await service.PrescriptionRecord(id_prescription, rut, email, patient, medicine, weight_medicine, measure_medicine, amount, days, state, id_stock);
+        await service.PrescriptionRecord(id_prescription, rut, email, patient, medicine, weight_medicine, measure_medicine, amount, days, id_stock);
 
         res.sendStatus(200);
 

@@ -45,7 +45,7 @@
                         <td>{{this.id_prescription}}</td>
                         <td>{{this.rut}}</td>
                         <td>{{this.patient}}</td>
-                        <td>{{this.medicine}}</td>
+                        <td>{{this.medicine}} {{this.weight_medicine}} {{this.measure_medicine}}</td>
                         <td>{{this.amount}}</td>
                         <td>{{this.total}}</td>
                         <td><button type="button" class="btn btn-sm btn-outline-secondary"
@@ -79,7 +79,7 @@
 
         const admin = $('#admin').val();
         const validate = total - amount;
-        
+
         // si validate es mayor a cero, entonces hay stock disponible de medicamento
         if(validate > 0){
             try{
