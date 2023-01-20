@@ -13,6 +13,7 @@ router.get('/', isAuth, async (req, res) => {
         res.render('Prescription', {
             prescriptions,
             admin: req.email,
+            email: req.email,
             helpers: {
                 state: function (state, opts) {
                     return state == 'pendiente' ? opts.fn(this) : opts.inverse(this); // estudiar***

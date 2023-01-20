@@ -36,7 +36,7 @@ create table discarded(
 
 create table prescriptions(
     id serial primary key,
-    id_prescription int not null,
+    id_prescription int not null unique,
     rut varchar(10) not null,
     email varchar(50) not null,
     patient varchar(100) not null,
@@ -58,9 +58,3 @@ create table reserves(
     id_prescription int not null,
     foreign key(id_prescription) references prescriptions(id)
 );
-
-
--- primer insert de la tabla users
-
-insert into users(email, password, token)
-values ('admin@mail.com', '$2a$10$bF8j4MaHOKOKK9q.AbpsnO0c52.Kd89C6V28OAj/JrrtX1ovKAIOS');
