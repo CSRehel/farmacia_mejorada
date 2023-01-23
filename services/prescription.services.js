@@ -53,6 +53,20 @@ class PrescriptionService {
 
         return result.rows[0];
     }
+
+    /**
+     * @description cambia el estado de las prescripciones
+     * @param {*} id id de la prescripción
+     * @param {*} state nuevo estado de la prescripción
+     * @returns devuelve 1 si todo ha salido bien
+     */
+    async setState(id, state) {
+        const result = await pool.query(
+            `update prescriptions set state = '${state}' where id = ${id}`
+        );
+
+        return result.rowCount;
+    }
 }
 
 module.exports = PrescriptionService;

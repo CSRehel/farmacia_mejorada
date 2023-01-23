@@ -1,6 +1,9 @@
 const pool = require('../libs/postgres.pool');
 const boom = require('@hapi/boom');
 
+const PrescriptionService = require('../services/prescription.services');
+const service = new PrescriptionService();
+
 class deliveryService {
 
     /**
@@ -26,16 +29,10 @@ class deliveryService {
             values: [discount]
         }
 
-        // cambiar estado de prescripción
-        const setState = {
-            text: "update prescriptions set state = 'entregado' where id = $1",
-            values: [id_prescription]
-        }
-
         try {
             await pool.query('BEGIN');
             await pool.query(discountStock);
-            await pool.query(setState);
+            await service.setState(id_prescription, 'entregado');
             await pool.query('COMMIT');
 
             return true;

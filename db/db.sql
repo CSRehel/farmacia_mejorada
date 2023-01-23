@@ -51,10 +51,11 @@ create table prescriptions(
 );
 
 -- cantidad se deja en cero si se escoje opcion de no reservar
+-- reserve_option: notification/no_reserve
 create table reserves(
     id serial primary key,
     amout int not null,
-    notification varchar(20) not null,
+    reserve_option varchar(12) not null,
     id_prescription int not null,
     foreign key(id_prescription) references prescriptions(id)
 );

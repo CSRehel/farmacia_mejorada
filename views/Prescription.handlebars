@@ -83,7 +83,7 @@
         // si validate es mayor a cero, entonces hay stock disponible de medicamento
         if(validate > 0){
             try{
-                window.location.href = `/delivery/?admin=${admin}&id=${id}&id_prescription=${id_prescription}&rut=${rut}&patient=${patient}&medicine=${medicine}&amount=${amount}&days=${days}&state=${state}`;
+                window.location.href = `/delivery/?email=${admin}&id=${id}&id_prescription=${id_prescription}&rut=${rut}&patient=${patient}&medicine=${medicine}&amount=${amount}&days=${days}&state=${state}`;
 
             }catch({response}){
                 const { data } = response;
@@ -92,14 +92,15 @@
             }
 
         }else{
-            /*try{
-                window.location.href = `/reserva?id_prescripcion=${id}&id_receta=${id_receta}&rut=${rut}&correo=${correo}&paciente=${paciente}&medicamento=${medicamento}&cantidad=${cantidad}&dias=${dias}&estado=${estado}`;
+
+            try{
+                window.location.href = `/reserve/?email=${admin}&id=${id}&id_prescription=${id_prescription}&rut=${rut}&email_patient=${email}&patient=${patient}&medicine=${medicine}&amount=${amount}&days=${days}&state=${state}`;
 
             }catch({response}){
                 const { data } = response;
                 const { error } = data;
                 alert( error );
-            }*/
+            }
         }
 
     }
