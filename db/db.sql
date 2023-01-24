@@ -50,12 +50,17 @@ create table prescriptions(
     foreign key(id_stock) references stock(id)
 );
 
--- cantidad se deja en cero si se escoje opcion de no reservar
 -- reserve_option: notification/no_reserve
 create table reserves(
     id serial primary key,
-    amout int not null,
+    amount int not null,
     reserve_option varchar(12) not null,
     id_prescription int not null,
     foreign key(id_prescription) references prescriptions(id)
 );
+
+
+-- aquellos que no desean recibir correo, deben aparecer con estado 'descartado'
+select * from prescriptions where state = 'reservado';
+select * from reserve where reserve_option = 'notification';
+select * from stock where id = 1;

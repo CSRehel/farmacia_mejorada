@@ -2,7 +2,8 @@ const isAuth = require('../middleware/auth');
 const express = require('express');
 const router = express.Router();
 
-
+const reserveService = require('../services/reserve.services');
+const service = new reserveService();
 
 // renderiza vista Reserve
 router.get('/', isAuth, async(req, res) => {
@@ -21,6 +22,7 @@ router.get('/', isAuth, async(req, res) => {
     });
 });
 
+// registro de reservas
 router.post('/', async (req, res) => {
     const { reserve_option, amount, id, email } = req.body;
 
@@ -32,6 +34,7 @@ router.post('/', async (req, res) => {
 
 
     } catch (e) {
+        console.log(e);
         res.render('Reserve', { message: `Error al guardar los datos`, code: 500 });
     }
 })

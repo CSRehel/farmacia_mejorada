@@ -65,6 +65,25 @@ class AuthService {
         return user;
     }
 
+    /**
+     * @description envía un email al correo seleccionado
+     * @param {*} infoMail encabezado del correo
+     * @returns devuelve el mensaje 'mail sent' si todo salio bien
+     */
+    async sendMail(infoMail) {
+        const transporter = nodemailer.createTransport({
+          host: "smtp.gmail.com",
+          secure: true,
+          port: 465,
+          auth: {
+            user: config.smtpEmail,
+            pass: config.smtpPassword
+          }
+        });
+        await transporter.sendMail(infoMail);
+        return { message: 'mail sent' };
+      }
+
 }
 
 module.exports = AuthService;
