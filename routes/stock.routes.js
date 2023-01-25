@@ -36,9 +36,6 @@ router.put('/', async (req, res) => {
         const stock = await service.updateStock(idMedicine, boxUp);
         res.sendStatus(200).send(stock);
 
-        // cambio: notificar cada vez que se actualice un medicamento,
-        // a los pacientes que han reservado y que desean recibir correo.
-        const verify = await verifyReserve(medicine); // pendiente nodemailer***
 
     } catch (e) {
         res.sendStatus(500).render('Stock', {message: `Error al guardar los datos`, code: 500})

@@ -53,14 +53,12 @@ create table prescriptions(
 -- reserve_option: notification/no_reserve
 create table reserves(
     id serial primary key,
-    amount int not null,
     reserve_option varchar(12) not null,
     id_prescription int not null,
     foreign key(id_prescription) references prescriptions(id)
 );
 
 
--- aquellos que no desean recibir correo, deben aparecer con estado 'descartado'
-select * from prescriptions where state = 'reservado';
-select * from reserve where reserve_option = 'notification';
-select * from stock where id = 1;
+select p.id, p.patient, p.email, p.medicine, p.weight_medicine, p.measure_medicine, p.amount from prescriptions as p join reserves as r
+on p.id = r.id_prescription
+where p.medicine = 'diclofenaco sodico' and r.reserve_option = 'notification';

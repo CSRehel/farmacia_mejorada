@@ -13,17 +13,20 @@ class reserveService {
      * @param {*} id_prescription id de la prescripción
      * @returns retorna true si todo ha salido bien
      */
-    async reserveRecord(reserve_option, amount, id_prescription) {
+    async reserveRecord(reserve_option, id_prescription) {
+
+        let state = 'reservado';
+        await reserve_option == 'no_reserve' ? state = 'descartado' : state;
 
         const reserveRegister = {
-            text: `insert into reserves(amount, reserve_option, id_prescription) values ($1, '${reserve_option}', $2) RETURNING *`,
-            values: [amount, id_prescription]
+            text: `insert into reserves(reserve_option, id_prescription) values ('${reserve_option}', $1) RETURNING *`,
+            values: [id_prescription]
         }
 
         try {
             await pool.query('BEGIN');
             await pool.query(reserveRegister);
-            await service.setState(id_prescription, 'reservado');
+            await service.setState(id_prescription, state);
             await pool.query('COMMIT');
             return true;
 

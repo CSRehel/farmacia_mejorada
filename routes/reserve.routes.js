@@ -24,12 +24,12 @@ router.get('/', isAuth, async(req, res) => {
 
 // registro de reservas
 router.post('/', async (req, res) => {
-    const { reserve_option, amount, id, email } = req.body;
+    const { reserve_option, id, email } = req.body;
 
     try {
 
         // terminar registro y envio de correo
-        await service.reserveRecord(reserve_option, amount, id);
+        await service.reserveRecord(reserve_option, id);
         res.status(200).redirect(`/prescription/?email=${email}`);
 
 

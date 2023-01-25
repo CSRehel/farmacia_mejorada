@@ -1,5 +1,9 @@
+const { config } = require('./../config/config');
 const pool = require('../libs/postgres.pool');
 const boom = require('@hapi/boom');
+
+const AuthService = require('../services/auth.services');
+const service = new AuthService();
 
 class stockService {
 
@@ -42,15 +46,17 @@ class stockService {
         return stock;
     }
 
+
+    // Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
     /**
      * @description actualiza el stock, sumando las unidades y cajas ingresadas en el formulario a las unidades
      * y cajas ya registradas en el sistema.
      * @param {*} idMedicine id del medicamento
      * @param {*} boxUp número de cajas
-     * @return
+     * @return devuelve 1 si todo salio bien
      */
     async updateStock(idMedicine, boxUp) {
-        const query = await pool.query(`select unit from stock where id = '${idMedicine}'`);
+        const query = await pool.query(`select medicine, unit from stock where id = '${idMedicine}'`);
         const unit = query.rows[0].unit
         const amount = (unit * boxUp);
 
@@ -59,8 +65,63 @@ class stockService {
             values: [idMedicine, Number(amount), boxUp]
         }
 
-        const query2 = await pool.query(increaseStock);
-        return query2.rowCount;
+        try {
+            await pool.query('BEGIN');
+            await pool.query(increaseStock);
+            const users = await this.verifyReserve(query.rows[0].medicine);
+            await this.sendMailStock(users);
+            await pool.query('COMMIT');
+
+            return true;
+
+        } catch (e) {
+            await pool.query('ROLLBACK');
+            console.log(e);
+            throw boom.badRequest('Error en la actualización de stock');
+        }
+    }
+
+    /**
+     * @description obtiene la lista de pacientes que han reservado el medicamento que se ha actualizado en sistema
+     * @param {*} medicine medicamento que se ha actualizado en sistema
+     * @returns devuelve la lista de pacientes con su respectiva información
+     */
+    async verifyReserve(medicine) {
+
+        const result = await pool.query(
+            `select p.id_prescription, p.patient, p.email, p.medicine, p.weight_medicine, p.measure_medicine, p.amount
+            from prescriptions as p join reserves as r
+            on p.id = r.id_prescription
+            where p.medicine = '${medicine}' and r.reserve_option = 'notification';`
+        );
+
+        const verify = result.rows;
+        return verify;
+    }
+
+    async sendMailStock(users) {
+
+        console.log(users);
+
+        if (users.length > 0) {
+
+            const emails = users.map(u => u.email);
+
+            const mail = {
+                from: config.smtpEmail,
+                to: emails,
+                subject: "Actualización de medicamento - Sistema de Farmacia",
+                html: `<p>Se ha actualizado stock del medicamento <b>${users[0].medicine} ${users[0].weight_medicine}${users[0].measure_medicine}</b>
+                        asociado a su reserva en nuestro sistema.</p></br><small>Recuerde que este correo es meramente informativo y no asegura
+                        que haya disponibilidad de stock al momento de realizar su compra</small>`,
+            }
+
+            const result = await service.sendMail(mail);
+            return result;
+        }else{
+            return true;
+        }
+
     }
 }
 
