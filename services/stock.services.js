@@ -46,8 +46,6 @@ class stockService {
         return stock;
     }
 
-
-    // Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
     /**
      * @description actualiza el stock, sumando las unidades y cajas ingresadas en el formulario a las unidades
      * y cajas ya registradas en el sistema.
@@ -60,25 +58,29 @@ class stockService {
         const unit = query.rows[0].unit
         const amount = (unit * boxUp);
 
+        // actualiza stock
         const increaseStock = {
             text: `UPDATE stock SET total = (total + $2), box = (box + $3) where id = $1`,
             values: [idMedicine, Number(amount), boxUp]
         }
 
-        try {
-            await pool.query('BEGIN');
-            await pool.query(increaseStock);
-            const users = await this.verifyReserve(query.rows[0].medicine);
-            await this.sendMailStock(users);
-            await pool.query('COMMIT');
+        const result = await pool.query(increaseStock);
+        return result.rowCount;
 
-            return true;
+        // try {
+        //     await pool.query('BEGIN');
+        //     await pool.query(increaseStock);
+        //     const users = await this.verifyReserve(query.rows[0].medicine);
+        //     await this.sendMailStock(users);
+        //     await pool.query('COMMIT');
 
-        } catch (e) {
-            await pool.query('ROLLBACK');
-            console.log(e);
-            throw boom.badRequest('Error en la actualización de stock');
-        }
+        //     return true;
+
+        // } catch (e) {
+        //     await pool.query('ROLLBACK');
+        //     console.log(e);
+        //     throw boom.badRequest('Error en la actualización de stock');
+        // }
     }
 
     /**
@@ -86,22 +88,29 @@ class stockService {
      * @param {*} medicine medicamento que se ha actualizado en sistema
      * @returns devuelve la lista de pacientes con su respectiva información
      */
-    async verifyReserve(medicine) {
+    async verifyReserve(idMedicine) {
+
+        const medicine = await pool.query(
+            `select medicine from stock where id = ${idMedicine}`
+        );
 
         const result = await pool.query(
             `select p.id_prescription, p.patient, p.email, p.medicine, p.weight_medicine, p.measure_medicine, p.amount
             from prescriptions as p join reserves as r
             on p.id = r.id_prescription
-            where p.medicine = '${medicine}' and r.reserve_option = 'notification';`
+            where p.medicine = '${medicine.rows[0].medicine}' and r.reserve_option = 'notification';`
         );
 
         const verify = result.rows;
         return verify;
     }
 
+    /**
+     * @description envía notificación a los pacientes cuando se actualice el stock del medicamento que han reservado en sistema
+     * @param {*} users lista de usuarios que tienen reserva del medicamento actualizado
+     * @returns devuelve true si la lista de usuarios viene vacía
+     */
     async sendMailStock(users) {
-
-        console.log(users);
 
         if (users.length > 0) {
 

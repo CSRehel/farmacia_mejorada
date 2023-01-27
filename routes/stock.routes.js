@@ -33,12 +33,14 @@ router.put('/', async (req, res) => {
     const { idMedicine, boxUp } = req.body;
 
     try {
-        const stock = await service.updateStock(idMedicine, boxUp);
-        res.sendStatus(200).send(stock);
+        await service.updateStock(idMedicine, boxUp);
+        const users = await service.verifyReserve(idMedicine);
+        await service.sendMailStock(users);
+        res.sendStatus(200);
 
 
     } catch (e) {
-        res.sendStatus(500).render('Stock', {message: `Error al guardar los datos`, code: 500})
+        res.render('Stock', {message: `Error al guardar los datos`, code: 500});
     }
 })
 
