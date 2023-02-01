@@ -35,7 +35,12 @@ router.put('/', async (req, res) => {
     try {
         await service.updateStock(idMedicine, boxUp);
         const users = await service.verifyReserve(idMedicine);
-        await service.sendMailStock(users);
+
+        if (users.length > 0) {
+            await service.updateStatePrescriptions(users);
+            await service.sendMailStock(users);
+        }
+
         res.sendStatus(200);
 
 

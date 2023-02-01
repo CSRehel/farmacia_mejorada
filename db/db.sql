@@ -34,6 +34,7 @@ create table discarded(
     foreign key(id_stock) references stock(id)
 );
 
+-- state: pendiente | reservado | entregado | descartado
 create table prescriptions(
     id serial primary key,
     id_prescription int not null unique,
@@ -59,6 +60,7 @@ create table reserves(
 );
 
 
-select p.id, p.patient, p.email, p.medicine, p.weight_medicine, p.measure_medicine, p.amount from prescriptions as p join reserves as r
+select p.id, p.patient, p.email, p.medicine, p.weight_medicine, p.measure_medicine, p.amount, r.reserve_option
+from prescriptions as p join reserves as r
 on p.id = r.id_prescription
 where p.medicine = 'diclofenaco sodico' and r.reserve_option = 'notification';

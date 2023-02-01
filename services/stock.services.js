@@ -1,9 +1,11 @@
 const { config } = require('./../config/config');
 const pool = require('../libs/postgres.pool');
-const boom = require('@hapi/boom');
 
 const AuthService = require('../services/auth.services');
 const service = new AuthService();
+
+const PrescriptionService = require('../services/prescription.services');
+const servicePresc = new PrescriptionService();
 
 class stockService {
 
@@ -66,21 +68,6 @@ class stockService {
 
         const result = await pool.query(increaseStock);
         return result.rowCount;
-
-        // try {
-        //     await pool.query('BEGIN');
-        //     await pool.query(increaseStock);
-        //     const users = await this.verifyReserve(query.rows[0].medicine);
-        //     await this.sendMailStock(users);
-        //     await pool.query('COMMIT');
-
-        //     return true;
-
-        // } catch (e) {
-        //     await pool.query('ROLLBACK');
-        //     console.log(e);
-        //     throw boom.badRequest('Error en la actualización de stock');
-        // }
     }
 
     /**
@@ -95,7 +82,7 @@ class stockService {
         );
 
         const result = await pool.query(
-            `select p.id_prescription, p.patient, p.email, p.medicine, p.weight_medicine, p.measure_medicine, p.amount
+            `select p.id, p.patient, p.email, p.medicine, p.weight_medicine, p.measure_medicine, p.amount
             from prescriptions as p join reserves as r
             on p.id = r.id_prescription
             where p.medicine = '${medicine.rows[0].medicine}' and r.reserve_option = 'notification';`
@@ -106,32 +93,42 @@ class stockService {
     }
 
     /**
+     * @description actualiza el estado de los usuarios que tienen reserva de medicamento
+     * @param {*} users lista de usuarios que tienen reserva del medicamento actualizado
+     */
+    async updateStatePrescriptions(users) {
+        const idPrescriptions = users.map(u => u.id);
+
+        for (let i = 0; i < idPrescriptions.length; i++) {
+            console.log(idPrescriptions[i]);
+            await servicePresc.setState(idPrescriptions[i], 'pendiente');
+        }
+    }
+
+    /**
      * @description envía notificación a los pacientes cuando se actualice el stock del medicamento que han reservado en sistema
      * @param {*} users lista de usuarios que tienen reserva del medicamento actualizado
-     * @returns devuelve true si la lista de usuarios viene vacía
+     * @returns
      */
     async sendMailStock(users) {
 
-        if (users.length > 0) {
+        const emails = users.map(u => u.email);
 
-            const emails = users.map(u => u.email);
-
-            const mail = {
-                from: config.smtpEmail,
-                to: emails,
-                subject: "Actualización de medicamento - Sistema de Farmacia",
-                html: `<p>Se ha actualizado stock del medicamento <b>${users[0].medicine} ${users[0].weight_medicine}${users[0].measure_medicine}</b>
+        const mail = {
+            from: config.smtpEmail,
+            to: emails,
+            subject: "Actualización de medicamento - Sistema de Farmacia",
+            html: `<p>Se ha actualizado stock del medicamento <b>${users[0].medicine} ${users[0].weight_medicine}${users[0].measure_medicine}</b>
                         asociado a su reserva en nuestro sistema.</p></br><small>Recuerde que este correo es meramente informativo y no asegura
                         que haya disponibilidad de stock al momento de realizar su compra</small>`,
-            }
-
-            const result = await service.sendMail(mail);
-            return result;
-        }else{
-            return true;
         }
+
+        const result = await service.sendMail(mail);
+        return result;
 
     }
 }
 
 module.exports = stockService;
+
+// actualizar estado de prescripciones al actualizar stock
