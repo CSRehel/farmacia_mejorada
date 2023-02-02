@@ -18,7 +18,6 @@ por lo que la calidad de mi código no era nada ortodoxa. Este es la versión me
 
 ## 💊 Este proyecto está construido con:
 
-* Microservicios
 * JavaScript 
 * NodeJs 
 * Express
